@@ -1,0 +1,25 @@
+columns = (
+    "psid",
+    "sid",
+    "pid",
+    "pg",
+    "prev",
+    "dv",
+    "br",
+    "os",
+    "lc",
+    "ref",
+    "so",
+    "me",
+    "ca",
+    "cc",
+    "rg",
+    "ct",
+    "meta.key",
+    "meta.value",
+    "sdur",
+    "unique",
+    "created",
+)
+agg_cols = ["year", "month", "day", "day_of_week", "hour", "pid"]
+date_col = "created"

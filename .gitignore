@@ -1,0 +1,10 @@
+clickhouse_data/
+trained_model.pkl
+venv
+analytics-obfuscated-faked.csv
+export-analytics-part.csv
+__pycache__/
+remove_pycache.sh
+tasks.txt
+logs/
+.env
