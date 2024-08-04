@@ -9,7 +9,7 @@ def create_tables():
         cat_features Array(String),
         cols Array(String),
         next_hrs Array(String),
-        model String
+        model_path String
     ) ENGINE = MergeTree()
     ORDER BY tuple()
     """

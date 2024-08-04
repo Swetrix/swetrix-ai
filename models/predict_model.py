@@ -24,7 +24,7 @@ def get_projects_records() -> pd.DataFrame:
     # temporary:
     """Read the csv file with encodings and add columns to it"""
     data = clickhouse_client.execute_query('SELECT * FROM analytics')
-    df = pd.DataFrame(data, columns=columns)
+    df = pd.DataFrame(data.result_rows, columns=columns)
 
     # Exclude specific columns
     columns_to_exclude = ["meta.key", "meta.value"]
@@ -39,8 +39,7 @@ def get_variable_from_tmp(var_name: str):
         f"SELECT {var_name} FROM training_tmp"
     )
     # Clickhouse ORM returns a tuple of list, accessing the actual python object
-    variable = result[0][0]  
-    return variable
+    return result.result_rows[0][0]
 
 
 def preprocess_data(df, date_col):
@@ -143,7 +142,8 @@ def predict_future_data():
     cat_features = get_variable_from_tmp("cat_features")
     cols = get_variable_from_tmp("cols")
     next_hrs = get_variable_from_tmp("next_hrs")
-    model = fetch_model()
+    model_path = get_variable_from_tmp("model_path")
+    model = fetch_model(model_path)
 
     df = get_projects_records()
     df = preprocess_data(df, date_col)

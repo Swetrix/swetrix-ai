@@ -34,13 +34,13 @@ def get_predictions(pid: str, timeframe: TimeFrameEnum):
     )
     result = clickhouse_client.execute_query(prediction_query)
 
-    if not result or not result[0][0]:
+    if not result or not result.result_rows:
         raise HTTPException(
             status_code=404,
             detail="Data not found. Prediction is not available.",
         )
 
-    prediction_data = json.loads(result[0][0])
+    prediction_data = json.loads(result.result_rows[0][0])
 
     if not prediction_data:
         raise HTTPException(

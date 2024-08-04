@@ -1,4 +1,5 @@
 clickhouse_data/
+trained_models/
 trained_model.pkl
 venv
 analytics-obfuscated-faked.csv

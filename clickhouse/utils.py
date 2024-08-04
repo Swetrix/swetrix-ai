@@ -1,3 +1,4 @@
+import os
 import base64
 import pickle
 import json
@@ -17,6 +18,17 @@ additional time for development which we do not have, as the priority is to test
 """
 
 
+def save_model_to_file(model, directory, model_name):
+    file_path = os.path.join(directory, model_name)
+    with open(file_path, 'wb') as model_file:
+        model_file.write(model)
+    return file_path
+
+def load_model_from_file(file_path):
+    with open(file_path, 'rb') as model_file:
+        model = model_file.read()
+    return model
+
 def serialize_model(model):
     pickled_model = pickle.dumps(model)
     base64_model = base64.b64encode(pickled_model).decode("utf-8")
@@ -29,16 +41,17 @@ def deserialize_model(base64_model):
     return model
 
 
-def fetch_model():
+def fetch_model(model_path):
     """Get the serialized model from the database for predictions"""
-    result = clickhouse_client.execute_query("SELECT model FROM training_tmp")
-    if result:
-        serialized_model = result[0][0]
-        model = deserialize_model(serialized_model)
-        return model
-    else:
-        print("No model found")
-        return None
+    serialized_model = load_model_from_file(model_path)
+    model = deserialize_model(serialized_model.decode())
+    return model
+
+def remove_existing_models(directory):
+    for filename in os.listdir(directory):
+        file_path = os.path.join(directory, filename)
+        if os.path.isfile(file_path) and filename.endswith(".pkl"):
+            os.remove(file_path)
 
 
 def insert_predictions(predictions):
@@ -49,4 +62,8 @@ def insert_predictions(predictions):
 
     # Drop previous(not relevant) data before the insertion of new predictions
     clickhouse_client.drop_all_data_from_table("predictions")
-    clickhouse_client.insert_data("predictions", serialized_data)
+    clickhouse_client.insert_data(
+        table="predictions",
+        data=serialized_data,
+        column_names=['pid', 'next_1_hour', 'next_4_hour', 'next_8_hour', 'next_12_hour', 'next_24_hour', 'next_72_hour', 'next_168_hour']
+    )
