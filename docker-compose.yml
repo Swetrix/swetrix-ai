@@ -10,13 +10,13 @@ services:
       - redis
       - clickhouse
     environment:
-      - DATABASE_URL=clickhouse://clickhouse:9000
+      - DATABASE_URL=clickhouse://clickhouse:8123
       - REDIS_URL=redis://redis:6379
       - CLICKHOUSE_HOST=clickhouse
-      - CLICKHOUSE_PORT=9000
+      - CLICKHOUSE_PORT=8123
       - CLICKHOUSE_USER=default
       - CLICKHOUSE_PASSWORD=
-      - CLICKHOUSE_DATABASE=test_db
+      - CLICKHOUSE_DATABASE=default
     volumes:
       - .:/app
     networks:
@@ -27,7 +27,6 @@ services:
     container_name: clickhouse
     ports:
       - "8123:8123"
-      - "9000:9000"
     volumes:
       - ./clickhouse_data:/var/lib/clickhouse
     networks:

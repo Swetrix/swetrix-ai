@@ -1,4 +1,4 @@
-from clickhouse.utils import insert_predictions
+from sqlite.utils import insert_predictions
 from models.predict_model import predict_future_data
 
 from logging_config import setup_logger

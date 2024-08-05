@@ -9,7 +9,7 @@ click==8.1.7
 click-didyoumean==0.3.1
 click-plugins==1.1.1
 click-repl==0.3.0
-clickhouse-driver==0.2.8
+clickhouse-connect==0.7.18
 dnspython==2.6.1
 email_validator==2.2.0
 exceptiongroup==1.2.2

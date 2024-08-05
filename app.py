@@ -1,10 +1,15 @@
 from fastapi import FastAPI, HTTPException
-from clickhouse.client import clickhouse_client
+from sqlite.client import sqlite_client
 import json
 from enum import Enum
 from celery_tasks.tasks import run_training_module, run_prediction_module
 
+from sqlite.client import SQLiteClient
+
 app = FastAPI()
+
+
+sqlite_client = SQLiteClient()
 
 
 class TimeFrameEnum(str, Enum):
@@ -24,7 +29,7 @@ def get_predictions(pid: str, timeframe: TimeFrameEnum):
     project_exists_query = (
         f"SELECT pid FROM predictions WHERE pid = '{pid}' LIMIT 1"
     )
-    project = clickhouse_client.execute_query(project_exists_query)
+    project = sqlite_client.execute_query(project_exists_query)
 
     if not project:
         raise HTTPException(status_code=404, detail="Project does not exist.")
@@ -32,9 +37,9 @@ def get_predictions(pid: str, timeframe: TimeFrameEnum):
     prediction_query = (
         f"SELECT {timeframe} FROM predictions WHERE pid = '{pid}'"
     )
-    result = clickhouse_client.execute_query(prediction_query)
+    result = sqlite_client.execute_query(prediction_query)
 
-    if not result or not result[0][0]:
+    if not result:
         raise HTTPException(
             status_code=404,
             detail="Data not found. Prediction is not available.",
