@@ -8,9 +8,7 @@ from sqlite.client import SQLiteClient
 
 app = FastAPI()
 
-
 sqlite_client = SQLiteClient()
-
 
 class TimeFrameEnum(str, Enum):
     next_1_hour = "next_1_hour"
@@ -21,10 +19,9 @@ class TimeFrameEnum(str, Enum):
     next_72_hour = "next_72_hour"
     next_168_hour = "next_168_hour"
 
-
 @app.get("/predict/")
-def get_predictions(pid: str, timeframe: TimeFrameEnum):
-    """Get predictions for the specified `pid` and `timeframe`"""
+def get_predictions(pid: str):
+    """Get predictions for the specified `pid`"""
 
     project_exists_query = (
         f"SELECT pid FROM predictions WHERE pid = '{pid}' LIMIT 1"
@@ -34,27 +31,25 @@ def get_predictions(pid: str, timeframe: TimeFrameEnum):
     if not project:
         raise HTTPException(status_code=404, detail="Project does not exist.")
 
-    prediction_query = (
-        f"SELECT {timeframe} FROM predictions WHERE pid = '{pid}'"
-    )
-    result = sqlite_client.execute_query(prediction_query)
+    predictions = {}
+    for timeframe in TimeFrameEnum:
+        prediction_query = (
+            f"SELECT {timeframe.value} FROM predictions WHERE pid = '{pid}'"
+        )
+        result = sqlite_client.execute_query(prediction_query)
 
-    if not result:
+        if result:
+            prediction_data = json.loads(result[0][0])
+            if prediction_data:
+                predictions[timeframe.value] = prediction_data
+
+    if not predictions:
         raise HTTPException(
             status_code=404,
             detail="Data not found. Prediction is not available.",
         )
 
-    prediction_data = json.loads(result[0][0])
-
-    if not prediction_data:
-        raise HTTPException(
-            status_code=404,
-            detail="Data not found. Prediction is not available.",
-        )
-
-    return {timeframe: prediction_data}
-
+    return predictions
 
 if __name__ == "__main__":
     import uvicorn
