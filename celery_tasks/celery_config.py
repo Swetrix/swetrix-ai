@@ -6,7 +6,7 @@ load_dotenv()
 celery_app = Celery(
     "swetrix-ai-celery",
     broker=os.getenv("REDIS_BROKER"),
-    backend=os.getenv("REDIS_BACKEND")
+    backend=os.getenv("REDIS_BACKEND"),
 )
 
 celery_app.conf.update(

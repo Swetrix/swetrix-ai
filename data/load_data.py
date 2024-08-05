@@ -13,13 +13,13 @@ warnings.filterwarnings("ignore")
 
 def read_data_csv():
     """Read the data from analytics in clickhouse with encodings and add columns to it"""
-    data = clickhouse_client.execute_query('SELECT * FROM analytics')
+    data = clickhouse_client.execute_query("SELECT * FROM analytics")
     df = pd.DataFrame(data.result_rows, columns=columns)
 
     # Exclude specific columns
     columns_to_exclude = ["meta.key", "meta.value"]
     df = df.drop(columns=columns_to_exclude)
-    
+
     return df
 
 
@@ -79,7 +79,7 @@ def categorize_features(df, id_column="pid", threshold=300):
     for col in columns_to_process:
         n = df[col].nunique()
         # Additionaly exclude campaing columns too hard to predict right now and resource consuming
-        if col not in ['dv', 'br', 'os', 'lc', 'cc', 'unique']:
+        if col not in ["dv", "br", "os", "lc", "cc", "unique"]:
             df.drop(col, axis=1, inplace=True)
             continue
 

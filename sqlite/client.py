@@ -2,6 +2,7 @@ import os
 import sqlite3
 from dotenv import load_dotenv
 
+
 class SQLiteClient:
     def __init__(self):
         load_dotenv()
@@ -20,8 +21,8 @@ class SQLiteClient:
         return result
 
     def insert_data(self, table: str, data: list, column_names: list):
-        placeholders = ', '.join('?' for _ in column_names)
-        columns = ', '.join(column_names)
+        placeholders = ", ".join("?" for _ in column_names)
+        columns = ", ".join(column_names)
         query = f"INSERT INTO {table} ({columns}) VALUES ({placeholders})"
         with self._get_connection() as connection:
             cursor = connection.cursor()

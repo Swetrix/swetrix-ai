@@ -28,13 +28,13 @@ def get_projects_records() -> pd.DataFrame:
     # query the clickhouse database to get historical data for all projects and predict future traffic for them
     # temporary:
     """Read the csv file with encodings and add columns to it"""
-    data = clickhouse_client.execute_query('SELECT * FROM analytics')
+    data = clickhouse_client.execute_query("SELECT * FROM analytics")
     df = pd.DataFrame(data.result_rows, columns=columns)
 
     # Exclude specific columns
     columns_to_exclude = ["meta.key", "meta.value"]
     df = df.drop(columns=columns_to_exclude)
-    
+
     return df
 
 
@@ -43,7 +43,7 @@ def get_variable_from_tmp(var_name: str):
     result = sqlite_client.execute_query(
         f"SELECT {var_name} FROM training_tmp"
     )
-    
+
     # Assuming there is only one row in the table
     if result:
         return result[0][0]
@@ -146,7 +146,7 @@ def fill_missing_columns(df, all_cols):
 
 
 def predict_future_data():
-    """Pre-processing of data"""    
+    """Pre-processing of data"""
     cat_features = json.loads(get_variable_from_tmp("cat_features"))
     cols = json.loads(get_variable_from_tmp("cols"))
     next_hrs = json.loads(get_variable_from_tmp("next_hrs"))

@@ -10,6 +10,7 @@ app = FastAPI()
 
 sqlite_client = SQLiteClient()
 
+
 class TimeFrameEnum(str, Enum):
     next_1_hour = "next_1_hour"
     next_4_hour = "next_4_hour"
@@ -18,6 +19,7 @@ class TimeFrameEnum(str, Enum):
     next_24_hour = "next_24_hour"
     next_72_hour = "next_72_hour"
     next_168_hour = "next_168_hour"
+
 
 @app.get("/predict/")
 def get_predictions(pid: str):
@@ -50,6 +52,7 @@ def get_predictions(pid: str):
         )
 
     return predictions
+
 
 if __name__ == "__main__":
     import uvicorn
