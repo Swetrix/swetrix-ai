@@ -1,5 +1,6 @@
 import sys
 import os
+import json
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
@@ -33,7 +34,7 @@ def train():
     model_path = save_model_to_file(serialized_model.encode(), model_directory, model_name)
     logger.info(f"Model saved to {model_path}")
 
-    training_tmp_data = [(cat_features, cols.to_list(), next_hrs, model_path)]
+    training_tmp_data = [(json.dumps(cat_features), json.dumps(cols.tolist()), json.dumps(next_hrs), model_path)]
 
     # Drop previous(not relevant) data before the insertion of new training data
     sqlite_client.drop_all_data_from_table("training_tmp")

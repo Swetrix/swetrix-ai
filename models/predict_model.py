@@ -152,12 +152,6 @@ def predict_future_data():
     next_hrs = json.loads(get_variable_from_tmp("next_hrs"))
     model_path = get_variable_from_tmp("model_path")
 
-
-    logger.info("cat_features",cat_features)
-    logger.info("cols",cols)
-    logger.info("next_hrs",next_hrs)
-    logger.info("model_path",model_path)
-
     model = fetch_model(model_path)
 
     df = get_projects_records()
