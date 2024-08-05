@@ -4,13 +4,13 @@ import pickle
 import json
 from data.serialisation import (
     serialise_predictions,
-    serialise_data_for_clickhouse,
+    serialise_data_for_sqlite,
 )
-from clickhouse.client import clickhouse_client
+from sqlite.client import sqlite_client
 
 
 """
-Clickhouse does not support the pickled objects yet, and it is a problem.
+SQLite does not support the pickled objects yet, and it is a problem.
 There is a solution to use `base64` encoding, store the model as a string and then decode it and use as a pickle object
 
 Though it is a subject of discussion in the future. I personally prefer to store the model in S3 bucket, but this will require an
@@ -58,11 +58,11 @@ def insert_predictions(predictions):
     """Insert serialised JSON data into the predictions table"""
     predictions_data = json.loads(predictions)
     processed_data = serialise_predictions(predictions_data)
-    serialized_data = serialise_data_for_clickhouse(processed_data)
+    serialized_data = serialise_data_for_sqlite(processed_data)
 
     # Drop previous(not relevant) data before the insertion of new predictions
-    clickhouse_client.drop_all_data_from_table("predictions")
-    clickhouse_client.insert_data(
+    sqlite_client.drop_all_data_from_table("predictions")
+    sqlite_client.insert_data(
         table="predictions",
         data=serialized_data,
         column_names=['pid', 'next_1_hour', 'next_4_hour', 'next_8_hour', 'next_12_hour', 'next_24_hour', 'next_72_hour', 'next_168_hour']

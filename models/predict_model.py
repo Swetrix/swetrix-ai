@@ -1,8 +1,13 @@
 import pandas as pd
 import numpy as np
 from constants import columns, date_col, agg_cols
-from clickhouse.utils import fetch_model
+from sqlite.utils import fetch_model
+from sqlite.client import sqlite_client
 from clickhouse.client import clickhouse_client
+from logging_config import setup_logger
+import json
+
+logger = setup_logger("data_new")
 
 """
 take cat_features
@@ -35,11 +40,14 @@ def get_projects_records() -> pd.DataFrame:
 
 def get_variable_from_tmp(var_name: str):
     """Get the variable from training_tmp table"""
-    result = clickhouse_client.execute_query(
+    result = sqlite_client.execute_query(
         f"SELECT {var_name} FROM training_tmp"
     )
-    # Clickhouse ORM returns a tuple of list, accessing the actual python object
-    return result.result_rows[0][0]
+    
+    # Assuming there is only one row in the table
+    if result:
+        return result[0][0]
+    return None
 
 
 def preprocess_data(df, date_col):
@@ -138,11 +146,18 @@ def fill_missing_columns(df, all_cols):
 
 
 def predict_future_data():
-    """Pre-processing of data"""
-    cat_features = get_variable_from_tmp("cat_features")
-    cols = get_variable_from_tmp("cols")
-    next_hrs = get_variable_from_tmp("next_hrs")
+    """Pre-processing of data"""    
+    cat_features = json.loads(get_variable_from_tmp("cat_features"))
+    cols = json.loads(get_variable_from_tmp("cols"))
+    next_hrs = json.loads(get_variable_from_tmp("next_hrs"))
     model_path = get_variable_from_tmp("model_path")
+
+
+    logger.info("cat_features",cat_features)
+    logger.info("cols",cols)
+    logger.info("next_hrs",next_hrs)
+    logger.info("model_path",model_path)
+
     model = fetch_model(model_path)
 
     df = get_projects_records()

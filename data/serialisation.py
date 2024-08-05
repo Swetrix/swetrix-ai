@@ -37,8 +37,8 @@ def serialise_predictions(data):
     return results
 
 
-def serialise_data_for_clickhouse(data):
-    """Serialise the processed data for ClickHouse insertion"""
+def serialise_data_for_sqlite(data):
+    """Serialise the processed data for SQLlite insertion"""
     serialized_data = []
 
     for record in data:

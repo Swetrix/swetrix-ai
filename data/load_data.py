@@ -11,8 +11,8 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
-def read_data_csv(file_path="analytics-obfuscated-faked.csv"):
-    """Read the csv file with encodings and add columns to it"""
+def read_data_csv():
+    """Read the data from analytics in clickhouse with encodings and add columns to it"""
     data = clickhouse_client.execute_query('SELECT * FROM analytics')
     df = pd.DataFrame(data.result_rows, columns=columns)
 

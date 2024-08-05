@@ -9,3 +9,4 @@ remove_pycache.sh
 tasks.txt
 logs/
 .env
+*.db

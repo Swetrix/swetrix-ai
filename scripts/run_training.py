@@ -3,8 +3,8 @@ import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from clickhouse.client import clickhouse_client
-from clickhouse.utils import serialize_model, save_model_to_file, remove_existing_models
+from sqlite.client import sqlite_client
+from sqlite.utils import serialize_model, save_model_to_file, remove_existing_models
 from data.load_data import pre_process_data
 from models.train_model import train_model
 from logging_config import setup_logger
@@ -36,9 +36,9 @@ def train():
     training_tmp_data = [(cat_features, cols.to_list(), next_hrs, model_path)]
 
     # Drop previous(not relevant) data before the insertion of new training data
-    clickhouse_client.drop_all_data_from_table("training_tmp")
+    sqlite_client.drop_all_data_from_table("training_tmp")
     
-    clickhouse_client.insert_data(
+    sqlite_client.insert_data(
         table="training_tmp",
         data=training_tmp_data,
         column_names=['cat_features', 'cols', 'next_hrs', 'model_path']
