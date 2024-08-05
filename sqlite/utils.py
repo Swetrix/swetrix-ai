@@ -20,14 +20,16 @@ additional time for development which we do not have, as the priority is to test
 
 def save_model_to_file(model, directory, model_name):
     file_path = os.path.join(directory, model_name)
-    with open(file_path, 'wb') as model_file:
+    with open(file_path, "wb") as model_file:
         model_file.write(model)
     return file_path
 
+
 def load_model_from_file(file_path):
-    with open(file_path, 'rb') as model_file:
+    with open(file_path, "rb") as model_file:
         model = model_file.read()
     return model
+
 
 def serialize_model(model):
     pickled_model = pickle.dumps(model)
@@ -47,6 +49,7 @@ def fetch_model(model_path):
     model = deserialize_model(serialized_model.decode())
     return model
 
+
 def remove_existing_models(directory):
     for filename in os.listdir(directory):
         file_path = os.path.join(directory, filename)
@@ -65,5 +68,14 @@ def insert_predictions(predictions):
     sqlite_client.insert_data(
         table="predictions",
         data=serialized_data,
-        column_names=['pid', 'next_1_hour', 'next_4_hour', 'next_8_hour', 'next_12_hour', 'next_24_hour', 'next_72_hour', 'next_168_hour']
+        column_names=[
+            "pid",
+            "next_1_hour",
+            "next_4_hour",
+            "next_8_hour",
+            "next_12_hour",
+            "next_24_hour",
+            "next_72_hour",
+            "next_168_hour",
+        ],
     )
